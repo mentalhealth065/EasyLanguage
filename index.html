@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Trilingo – Learn French, Arabic &amp; Chinese</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1d2433;--mu:#667085;--ac:#4f46e5;--ok:#16a34a;--bad:#dc2626;--bd:#e3e6ee;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--bg:#12141c;--card:#1c202c;--tx:#eef0f6;--mu:#9aa3b5;--ac:#818cf8;--bd:#2d3345}}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--tx)}
+header{padding:18px 16px 6px;max-width:900px;margin:auto}h1{margin:0;font-size:24px}h2{font-size:17px;margin:20px 0 8px}
+main{max-width:900px;margin:auto;padding:0 16px 40px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.mod{cursor:pointer;text-align:left;font:inherit;color:inherit}.mod.lock{opacity:.45;cursor:not-allowed}
+.mod b{display:block}.mod small,.mu{color:var(--mu)}
+button{font:inherit;cursor:pointer}.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 16px;margin:4px 4px 4px 0}
+.btn.g{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.task{display:flex;justify-content:space-between;gap:8px;font-size:14px;margin:6px 0}
+.tip{border-left:4px solid var(--ac);background:var(--card);padding:10px 12px;border-radius:8px;margin:10px 0}
+.w{display:flex;gap:12px;align-items:flex-start}.em{font-size:44px;line-height:1}
+.en{font-weight:700;font-size:18px;margin-bottom:4px}
+.l{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px dashed var(--bd);padding:4px 0}
+.l b{font-size:11px;background:var(--bd);border-radius:5px;padding:1px 6px;min-width:26px;text-align:center}
+.l span{font-size:20px}.l i{color:var(--mu);font-size:14px}.l button{margin-left:auto;border:1px solid var(--bd);background:transparent;border-radius:8px;padding:2px 8px}
+.ar{direction:rtl;unicode-bidi:isolate}
+.q{font-size:22px;margin:10px 0}.opts{display:grid;gap:8px}
+.opt{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:12px;text-align:left;font-size:17px}
+.opt.ok{background:var(--ok);color:#fff}.opt.no{background:var(--bad);color:#fff}
+.big{font-size:42px;font-weight:700}.tabs{display:flex;gap:6px;flex-wrap:wrap}
+</style></head>
+<body>
+<header><h1>🌍 Trilingo</h1><div class="mu">Learn French 🇫🇷 · Arabic 🇸🇦 · Chinese 🇨🇳 together — in English</div></header>
+<main id="app"></main>
+<script>
+// ---------- DATA: [emoji, English, French, FR-sound, Arabic, AR-translit, Chinese, pinyin] ----------
+const M=[
+{t:"Alphabet & Sounds",tip:"Chinese pinyin uses the SAME Latin letters as French, so b, m, n, l are already familiar. Arabic is written right-to-left and has no capital letters. Chinese vowels carry tones (ā á ǎ à) – always listen!",w:[
+["🍎","A-sound (apple)","A a","ah","ا","alif","啊","ā"],["🏀","B-sound (ball)","B b","beh","ب","bā'","波","bō"],["🍵","T-sound (tea)","T t","teh","ت","tā'","他","tā"],["🌙","M-sound (moon)","M m","em","م","mīm","妈","mā"],["👃","N-sound (nose)","N n","en","ن","nūn","你","nǐ"],["🦁","L-sound (lion)","L l","el","ل","lām","拉","lā"]]},
+{t:"Numbers 1–10",tip:"The digits 1, 2, 3 we use today travelled through Arabic. Chinese numbers are super regular: 11 = 十一 'ten-one', 20 = 二十 'two-ten'. French has irregular numbers later (soixante-dix = 'sixty-ten').",w:[
+["1️⃣","one","un","uh(n)","واحد","wāḥid","一","yī"],["2️⃣","two","deux","duh","اثنان","ithnān","二","èr"],["3️⃣","three","trois","trwah","ثلاثة","thalātha","三","sān"],["4️⃣","four","quatre","katr","أربعة","arbaʿa","四","sì"],["5️⃣","five","cinq","sank","خمسة","khamsa","五","wǔ"],["6️⃣","six","six","sees","ستة","sitta","六","liù"],["7️⃣","seven","sept","set","سبعة","sabʿa","七","qī"],["8️⃣","eight","huit","weet","ثمانية","thamāniya","八","bā"],["9️⃣","nine","neuf","nuhf","تسعة","tisʿa","九","jiǔ"],["🔟","ten","dix","dees","عشرة","ʿashara","十","shí"]]},
+{t:"Greetings",tip:"'Goodbye' is built the same way in French and Chinese: au revoir = 'to the seeing-again', 再见 zàijiàn = 'again-see'. 你好 nǐ hǎo is literally 'you good'.",w:[
+["👋","hello","Bonjour","bohn-ZHOOR","مرحبا","marḥaban","你好","nǐ hǎo"],["🤝","goodbye","Au revoir","oh ruh-VWAR","مع السلامة","maʿa s-salāma","再见","zàijiàn"],["🙏","thank you","Merci","mehr-SEE","شكرا","shukran","谢谢","xièxie"],["🥺","please","S'il vous plaît","seel voo PLEH","من فضلك","min faḍlik","请","qǐng"],["✅","yes","Oui","wee","نعم","naʿam","是","shì"],["❌","no","Non","nohn","لا","lā","不","bù"],
+["🌆","good evening","Bonsoir","bohn-SWAR","مساء الخير","masāʾ al-khayr","晚上好","wǎnshang hǎo"],["😴","good night","Bonne nuit","bun NWEE","تصبح على خير","tuṣbiḥ ʿalā khayr","晚安","wǎn'ān"],["😔","sorry","Pardon","par-DOHN","آسف","āsif","对不起","duìbuqǐ"],["😊","you're welcome","De rien","duh ree-AN","عفوا","ʿafwan","不客气","bú kèqi"],["🙋","excuse me","Excusez-moi","ek-skü-zay MWAH","عذرا","ʿudhran","不好意思","bù hǎoyìsi"],["🤗","welcome","Bienvenue","bee-an-vuh-NÜ","أهلا وسهلا","ahlan wa sahlan","欢迎","huānyíng"],["🤝","nice to meet you","Enchanté","ahn-shahn-TAY","تشرفنا","tasharrafnā","很高兴认识你","hěn gāoxìng rènshi nǐ"],["🕐","see you soon","À bientôt","ah bee-an-TOH","أراك قريبا","arāk qarīban","回头见","huítóu jiàn"],["🎉","congratulations","Félicitations","fay-lee-see-tah-SYOHN","مبروك","mabrūk","恭喜","gōngxǐ"],["🍀","good luck","Bonne chance","bun SHAHNS","حظا سعيدا","ḥaẓẓan saʿīdan","祝你好运","zhù nǐ hǎoyùn"],["🍽️","enjoy your meal","Bon appétit","bohn ah-pay-TEE","صحتين","saḥtayn","请慢用","qǐng màn yòng"],["🎂","happy birthday","Joyeux anniversaire","zhwah-YUH ah-nee-vehr-SEHR","عيد ميلاد سعيد","ʿīd mīlād saʿīd","生日快乐","shēngrì kuàilè"],["✌️","hi (informal)","Salut","sa-LÜ","أهلا","ahlan","嗨","hāi"],["📞","hello (phone)","Allô","ah-LOH","ألو","alū","喂","wéi"]]},
+{t:"Family & People",tip:"Baby-sounds repeat in all three: maman/papa, 妈妈 māma/爸爸 bàba. Arabic 'umm' (mother) is the root of 'ummah' (community).",w:[
+["👩","mother","Mère","mehr","أم","umm","妈妈","māma"],["👨","father","Père","pehr","أب","ab","爸爸","bàba"],["👦","boy","Garçon","gar-SOHN","ولد","walad","男孩","nánhái"],["👧","girl","Fille","fee","بنت","bint","女孩","nǚhái"],["🧑‍🤝‍🧑","friend","Ami","ah-MEE","صديق","ṣadīq","朋友","péngyou"],["👩‍🏫","teacher","Professeur","pro-feh-SUHR","معلم","muʿallim","老师","lǎoshī"]]},
+{t:"Food & Drink",tip:"'Tea' travelled the world: Chinese chá → Arabic shāy; French 'thé' came via another route. French 'riz' comes from Arabic 'aruzz' (rice)!",w:[
+["💧","water","Eau","oh","ماء","māʾ","水","shuǐ"],["🍞","bread","Pain","pan","خبز","khubz","面包","miànbāo"],["🍚","rice","Riz","ree","أرز","aruzz","米饭","mǐfàn"],["🍵","tea","Thé","tay","شاي","shāy","茶","chá"],["🥛","milk","Lait","leh","حليب","ḥalīb","牛奶","niúnǎi"],["🍎","apple","Pomme","pom","تفاحة","tuffāḥa","苹果","píngguǒ"],
+["🍳","egg","Œuf","uhf","بيضة","bayḍa","鸡蛋","jīdàn"],["🧀","cheese","Fromage","fro-MAHZH","جبن","jubn","奶酪","nǎilào"],["🍗","chicken","Poulet","poo-LEH","دجاج","dajāj","鸡肉","jīròu"],["🥩","meat","Viande","vee-AHND","لحم","laḥm","肉","ròu"],["🍜","noodles","Nouilles","nooy","معكرونة","maʿkarūna","面条","miàntiáo"],["🥔","potato","Pomme de terre","pom duh TEHR","بطاطس","baṭāṭis","土豆","tǔdòu"],["🍅","tomato","Tomate","to-MAHT","طماطم","ṭamāṭim","西红柿","xīhóngshì"],["🥕","carrot","Carotte","ka-ROT","جزرة","jazara","胡萝卜","húluóbo"],["🍌","banana","Banane","ba-NAN","موز","mawz","香蕉","xiāngjiāo"],["🍊","orange","Orange","o-RAHNZH","برتقال","burtuqāl","橙子","chéngzi"],["🍇","grapes","Raisin","reh-ZAN","عنب","ʿinab","葡萄","pútao"],["☕","coffee","Café","ka-FAY","قهوة","qahwa","咖啡","kāfēi"],["🧂","salt","Sel","sel","ملح","milḥ","盐","yán"],["🍬","sugar","Sucre","SÜ-kruh","سكر","sukkar","糖","táng"]]},
+{t:"Colors",tip:"Every Chinese color ends in 色 sè ('color'). Arabic and French colors are adjectives that change with gender (rouge/rouge, أحمر/حمراء). French puts them AFTER the noun, like Arabic.",w:[
+["🔴","red","Rouge","roozh","أحمر","aḥmar","红色","hóngsè"],["🔵","blue","Bleu","bluh","أزرق","azraq","蓝色","lánsè"],["🟢","green","Vert","vehr","أخضر","akhḍar","绿色","lǜsè"],["⚪","white","Blanc","blahn","أبيض","abyaḍ","白色","báisè"],["⚫","black","Noir","nwar","أسود","aswad","黑色","hēisè"],["🟡","yellow","Jaune","zhohn","أصفر","aṣfar","黄色","huángsè"]]},
+{t:"Animals",tip:"Chinese animal words are short, one syllable. In French, final letters are often silent (chat = 'shah', chien = 'shee-an'), so listen and don't trust spelling.",w:[
+["🐱","cat","Chat","shah","قطة","qiṭṭa","猫","māo"],["🐶","dog","Chien","shee-AN","كلب","kalb","狗","gǒu"],["🐦","bird","Oiseau","wah-ZOH","طائر","ṭāʾir","鸟","niǎo"],["🐟","fish","Poisson","pwah-SOHN","سمكة","samaka","鱼","yú"],["🐴","horse","Cheval","shuh-VAL","حصان","ḥiṣān","马","mǎ"],["🐄","cow","Vache","vash","بقرة","baqara","牛","niú"]]},
+{t:"Home & World",tip:"Arabic words grow from 3-letter roots: k-t-b gives kitāb (book), kātib (writer), maktab (office). French 'livre' is masculine; learn each noun with its article (le livre).",w:[
+["🏠","house","Maison","meh-ZOHN","بيت","bayt","家","jiā"],["🏫","school","École","ay-KOL","مدرسة","madrasa","学校","xuéxiào"],["📖","book","Livre","leevr","كتاب","kitāb","书","shū"],["🚗","car","Voiture","vwah-TUR","سيارة","sayyāra","汽车","qìchē"],["☀️","sun","Soleil","so-LAY","شمس","shams","太阳","tàiyáng"],["🌙","moon","Lune","lün (ü as in 'cute')","قمر","qamar","月亮","yuèliang"]]},
+{t:"Everyday Verbs",tip:"Chinese verbs NEVER change form (吃 chī = eat, for I/you/they). French verbs conjugate (je mange, nous mangeons). Arabic verbs change with prefixes (ya-/ta-/a-). Start with Chinese: it's the easiest here!",w:[
+["🍽️","to eat","Manger","mahn-ZHAY","يأكل","yaʾkul","吃","chī"],["🥤","to drink","Boire","bwahr","يشرب","yashrab","喝","hē"],["🚶","to go","Aller","ah-LAY","يذهب","yadhhab","去","qù"],["👀","to see / look","Voir","vwahr","يرى","yarā","看","kàn"],["❤️","to love","Aimer","eh-MAY","يحب","yuḥibb","爱","ài"],["🙌","to want","Vouloir","voo-LWAR","يريد","yurīd","想","xiǎng"]]},
+{t:"Survival Phrases",tip:"Questions: Chinese just adds 吗 ma at the end; French can raise the voice or use 'est-ce que'; Arabic often adds 'hal' or uses tone. You are ready to travel!",w:[
+["🏷️","My name is…","Je m'appelle…","zhuh mah-PEL","اسمي…","ismī…","我叫…","wǒ jiào…"],["😊","How are you?","Comment ça va ?","ko-mahn sa VA","كيف حالك؟","kayfa ḥāluk","你好吗？","nǐ hǎo ma"],["👍","I'm fine","Ça va bien","sa va bee-AN","أنا بخير","anā bi-khayr","我很好","wǒ hěn hǎo"],["🤷","I don't understand","Je ne comprends pas","zhuh nuh kom-PRAHN pah","لا أفهم","lā afham","我不懂","wǒ bù dǒng"],["📍","Where is…?","Où est… ?","oo eh","أين… ؟","ayna","哪里…？","nǎlǐ"],["💰","How much?","Combien ?","kom-bee-AN","بكم؟","bikam","多少钱？","duōshao qián"]]}
+];
+const LG={fr:{n:"FR",f:2,p:3,v:"fr-FR"},ar:{n:"AR",f:4,p:5,v:"ar-SA"},zh:{n:"ZH",f:6,p:7,v:"zh-CN"}};
+// ---------- STATE ----------
+const KEY="trilingo-v1",A=document.getElementById("app");
+let S={done:{},days:[],ex:[],day:{}};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const today=()=>new Date().toISOString().slice(0,10);
+const ago=n=>{const d=new Date();d.setDate(d.getDate()-n);return d.toISOString().slice(0,10)};
+function bump(k,n=1){const d=today();S.day[d]=S.day[d]||{};S.day[d][k]=(S.day[d][k]||0)+n;if(!S.days.includes(d))S.days.push(d);save()}
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+function say(t,l){bump("audio");try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=LG[l].v;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(b)say(b.dataset.s,b.dataset.l)});
+const fm=(w,l)=>`<span class="${l=="ar"?"ar":""}">${w[LG[l].f]}</span> <small class="mu">${w[LG[l].p]}</small>`;
+// ---------- QUIZ ----------
+function mk(words,n){return shuf(words).slice(0,n).map(w=>{
+  const others=shuf(words.filter(x=>x!==w)).slice(0,3),l=shuf(Object.keys(LG))[0];
+  if(Math.random()<.5)return{q:`${fm(w,l)}<br><small class="mu">What does this mean?</small>`,o:shuf([w,...others]).map(x=>[`${x[0]} ${x[1]}`,x===w]).map(([h,c])=>({h,c}))};
+  return{q:`${w[0]} “${w[1]}” in <b>${{fr:"French",ar:"Arabic",zh:"Chinese"}[l]}</b>?`,o:shuf([w,...others]).map(x=>({h:fm(x,l),c:x===w}))}})}
+function quiz(qs,title,end){let i=0,sc=0;(function show(){const q=qs[i];
+  A.innerHTML=`<div class="card"><small class="mu">${title} · ${i+1}/${qs.length}</small><div class="q">${q.q}</div><div class="opts">${q.o.map((o,k)=>`<button class="opt" data-k="${k}">${o.h}</button>`).join("")}</div></div>`;
+  A.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const o=q.o[+b.dataset.k];if(o.c)sc++;
+    A.querySelectorAll(".opt").forEach((x,k)=>{x.disabled=true;if(q.o[k].c)x.classList.add("ok");else if(x===b)x.classList.add("no")});
+    setTimeout(()=>{++i<qs.length?show():end(sc,qs.length)},1000)})})()}
+// ---------- SCREENS ----------
+function home(){const d=S.day[today()]||{},wk=S.days.filter(x=>x>=ago(6)).length,mo=today().slice(0,7);
+  const wp=S.ex.filter(e=>e.ok&&e.d>=ago(6)).length,mm=new Set(S.ex.filter(e=>e.ok&&e.d.startsWith(mo)).map(e=>e.m)).size,md=S.days.filter(x=>x.startsWith(mo)).length;
+  const T=(l,v,g)=>`<div class="task"><span>${v>=g?"✅":"⬜"} ${l}</span><span>${Math.min(v,g)}/${g}</span></div><div class="bar"><i style="width:${Math.min(100,v/g*100)}%"></i></div>`;
+  const dn=Object.keys(S.done).length;
+  A.innerHTML=`<div class="card"><b>Overall progress: ${dn}/10 modules passed</b><div class="bar"><i style="width:${dn*10}%"></i></div></div>
+  <h2>📅 Daily tasks</h2><div class="card">${T("Study one lesson (6 cards)",d.cards||0,6)}${T("Listen to 5 words 🔊",d.audio||0,5)}${T("Finish 1 quiz or recap",d.quiz||0,1)}</div>
+  <h2>🗓️ Weekly tasks</h2><div class="card">${T("Study on 5 days this week",wk,5)}${T("Pass 2 module exams",wp,2)}</div>
+  <h2>🏆 Monthly tasks</h2><div class="card">${T("Study on 20 days this month",md,20)}${T("Pass 8 different module exams",mm,8)}</div>
+  <button class="btn" id="tn">🎵 Chinese tone drills</button><h2>📚 Modules <small class="mu">(pass an exam with 70%+ to unlock the next)</small></h2>
+  <div class="grid">${M.map((m,i)=>{const ok=i==0||S.done[i-1]!==undefined;return`<button class="card mod ${ok?"":"lock"}" data-m="${i}" ${ok?"":"disabled"}><small>Module ${i+1}</small><b>${m.t}</b><small>${ok?(S.done[i]!==undefined?"✅ Best: "+S.done[i]+"%":"Start →"):"🔒 Locked"}</small></button>`}).join("")}</div>
+  <p class="mu"><small>Progress is saved on this device. 🔊 uses your device's voices – install Arabic/Chinese voices in system settings if sound is missing.</small></p>`;
+  A.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>openMod(+b.dataset.m));tn.onclick=tones}
+function result(h,btns){A.innerHTML=`<div class="card" style="text-align:center">${h}</div><div>${btns.map(([l,f,g])=>`<button class="btn ${g?"g":""}" id="b${btns.indexOf([l,f,g])}">${l}</button>`).join("")}</div>`;
+  A.querySelectorAll("button.btn").forEach((b,i)=>b.onclick=btns[i][1])}
+function openMod(m){if(m==0)return learn(0);
+  const p=M[m-1];A.innerHTML=`<div class="card"><h2>🔁 Recap time</h2>Before Module ${m+1}, let's refresh Module ${m}: <b>${p.t}</b>.</div><button class="btn" id="go">Start recap</button><button class="btn g" id="sk">Skip recap</button><button class="btn g" id="hm">Home</button>`;
+  go.onclick=()=>quiz(mk(p.w,5),"Recap",(s,n)=>{bump("quiz");result(`<div class="big">${s}/${n}</div>Recap complete!`,[["Start Module "+(m+1),()=>learn(m)]])});
+  sk.onclick=()=>learn(m);hm.onclick=home}
+function learn(m){const x=M[m];bump("cards",x.w.length);
+  A.innerHTML=`<button class="btn g" id="hm">← Home</button><h2>Module ${m+1}: ${x.t}</h2><div class="tip">💡 <b>Language link:</b> ${x.tip}</div>
+  ${x.w.map(w=>`<div class="card w"><div class="em">${w[0]}</div><div style="flex:1"><div class="en">${w[1]}</div>${Object.keys(LG).map(l=>`<div class="l"><b>${LG[l].n}</b>${fm(w,l)}<button data-s="${w[LG[l].f]}" data-l="${l}" aria-label="Listen">🔊</button></div>`).join("")}</div></div>`).join("")}
+  <button class="btn g" id="wr">✍️ Writing practice</button><button class="btn" id="ex">Take the Module ${m+1} exam →</button>`;
+  hm.onclick=home;wr.onclick=()=>write(m);ex.onclick=()=>quiz(mk(x.w,Math.min(8,x.w.length)),`Exam · ${x.t}`,(s,n)=>{const p=Math.round(s/n*100),ok=p>=70;
+    bump("quiz");S.ex.push({m,p,ok,d:today()});if(ok)S.done[m]=Math.max(S.done[m]||0,p);save();
+    result(`<div class="big">${p}%</div>${ok?(m==9?"🎉 You finished all 10 modules! Congratulations!":"✅ Passed! Next module unlocked."):"Not yet – you need 70%. Review and try again."}`,
+    [...(ok&&m<9?[["Next module →",()=>openMod(m+1)]]:[]),["Review lesson",()=>learn(m),1],["Home",home,1]])})}
+// ---------- WRITING PRACTICE (trace, then write from memory) ----------
+function write(m,i=0,l="zh"){const x=M[m],w=x.w[i%x.w.length],t=w[LG[l].f];bump("write");
+  A.innerHTML=`<button class="btn g" id="hm">← Back to lesson</button><h2>✍️ Writing: ${x.t}</h2>
+  <div class="tabs">${Object.keys(LG).map(k=>`<button class="btn ${k==l?"":"g"}" data-t="${k}">${LG[k].n}</button>`).join("")}</div>
+  <div class="card"><div class="en">${w[0]} ${w[1]}</div><div>${fm(w,l)} <button class="btn g" data-s="${t}" data-l="${l}">🔊</button></div>
+  <canvas id="cv" width="640" height="320" style="width:100%;max-width:440px;touch-action:none;border:1px solid var(--bd);border-radius:12px;margin-top:8px"></canvas></div>
+  <button class="btn g" id="cl">Clear</button><button class="btn" id="nx">Next word →</button>
+  <p class="mu"><small>1) Trace the grey text with finger or mouse. 2) Clear and write it from memory. ${l=="zh"?"Chinese strokes: top→bottom, left→right, outside before inside.":l=="ar"?"Arabic: write right→left; letters join inside a word.":"French: watch the accents (é è ê à ç) – they change the sound."}</small></p>`;
+  const c=cv.getContext("2d"),dk=matchMedia("(prefers-color-scheme:dark)").matches;
+  const gh=()=>{c.clearRect(0,0,640,320);c.fillStyle=dk?"#3a4054":"#d5d9e6";c.textAlign="center";c.textBaseline="middle";c.direction=l=="ar"?"rtl":"ltr";let s=200;c.font=s+"px sans-serif";while(c.measureText(t).width>600&&s>30){s-=10;c.font=s+"px sans-serif"}c.fillText(t,320,170)};
+  gh();let dr=0;c.lineWidth=8;c.lineCap=c.lineJoin="round";c.strokeStyle=dk?"#a5b4fc":"#4f46e5";
+  const P=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*640/r.width,(e.clientY-r.top)*320/r.height]};
+  cv.onpointerdown=e=>{dr=1;cv.setPointerCapture(e.pointerId);const[a,b]=P(e);c.beginPath();c.moveTo(a,b)};
+  cv.onpointermove=e=>{if(!dr)return;const[a,b]=P(e);c.lineTo(a,b);c.stroke()};cv.onpointerup=()=>dr=0;
+  A.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>write(m,i,b.dataset.t));
+  cl.onclick=gh;nx.onclick=()=>write(m,i+1,l);hm.onclick=()=>learn(m)}
+// ---------- CHINESE TONE DRILLS ----------
+const TS=[[["妈","mā","mother"],["麻","má","hemp"],["马","mǎ","horse"],["骂","mà","scold"]],[["诗","shī","poem"],["十","shí","ten"],["史","shǐ","history"],["是","shì","to be"]],[["八","bā","eight"],["拔","bá","pull out"],["把","bǎ","hold"],["爸","bà","dad"]]];
+const TN=["1 ˉ high & flat","2 ˊ rising","3 ˇ dips then rises","4 ˋ sharp fall"];
+function tones(){A.innerHTML=`<button class="btn g" id="hm">← Home</button><h2>🎵 Chinese tone drills</h2>
+  <div class="tip">Same syllable, different tone = different word. Tones: <b>${TN.join(" · ")}</b>.<br>French &amp; Arabic don't use pitch for meaning – in Chinese it IS the meaning. Tap each word to hear the contrast, then start the drill.</div>
+  ${TS.map(s=>`<div class="card tabs">${s.map(t=>`<button class="btn g" data-s="${t[0]}" data-l="zh">🔊 ${t[0]} ${t[1]} <small>${t[2]}</small></button>`).join("")}</div>`).join("")}
+  <button class="btn" id="st">Start listening drill (10 rounds)</button>`;
+  hm.onclick=home;st.onclick=()=>{let r=0,sc=0;(function rd(){const s=TS[Math.floor(Math.random()*3)],k=Math.floor(Math.random()*4),t=s[k];
+    A.innerHTML=`<div class="card"><small class="mu">Round ${r+1}/10</small><div class="q">Which tone do you hear?</div><button class="btn g" data-s="${t[0]}" data-l="zh">🔊 Play again</button>
+    <div class="opts" style="margin-top:10px">${TN.map((n,j)=>`<button class="opt" data-k="${j}">${n}</button>`).join("")}</div></div>`;
+    setTimeout(()=>say(t[0],"zh"),300);
+    A.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const ok=+b.dataset.k==k;if(ok)sc++;
+      A.querySelectorAll(".opt").forEach((x,j)=>{x.disabled=true;if(j==k)x.classList.add("ok");else if(x==b)x.classList.add("no")});
+      b.insertAdjacentHTML("afterend",`<div class="mu">It was ${t[0]} ${t[1]} (${t[2]})</div>`);
+      setTimeout(()=>{++r<10?rd():(bump("quiz"),result(`<div class="big">${sc}/10</div>Tone drill finished!`,[["Drill again",tones],["Home",home,1]]))},1500)})})()}}
+home();
+</script></body></html>
